@@ -5,7 +5,7 @@ Provides a pdflatex compiler as an endpoint in a container.
 Exposes a `POST` endpoint on `container:5050/` to send a TeX file.
 It will compile it with `pdftex` and will return the final PDF.
 
-Adapted from <https://github.com/comsolid/pdflatex-aas>
+Adapted from <https://github.com/comsolid/pdflatex-saas>
 
 ## Endpoints
 
