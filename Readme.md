@@ -2,10 +2,16 @@
 
 Provides a pdflatex compiler as an endpoint in a container.
 
-Exposes a `POST` endpoint on `container:80/` to send a TeX file.
+Exposes a `POST` endpoint on `container:5050/` to send a TeX file.
 It will compile it with `pdftex` and will return the final PDF.
 
 Adapted from <https://github.com/comsolid/pdflatex-aas>
+
+## Endpoints
+
+- `GET /ping`  will respond `{ "message" : "pong" }` in JSON form.
+- `GET /version`  will respond `{ "version" : "1.0" }`
+- `POST /pdf`  will respond a PDF file or errors.
 
 ## Commands
 
@@ -20,13 +26,13 @@ docker build -t latex-aas \
 ### Run container
 
 ```bash
-docker run -d --name latex -p "5050:80" latex-aas
+docker run -d --name latex -p "5050:5050" latex-aas
 ```
 
 ### Usage: Compile LaTeX to PDF
 
 ```bash
-curl localhost:5050 --data-binary @demo.tex > demo.pdf
+curl localhost:5050/pdf --data-binary @demo.tex > demo.pdf
 ```
 
 ### Remove container

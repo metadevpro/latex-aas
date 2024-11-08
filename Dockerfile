@@ -2,7 +2,7 @@ FROM ubuntu:24.10
 ENV DEBIAN_FRONTEND="noninteractive"
 ARG INSTALL_EXTRA_PACKAGES
 
-EXPOSE 80
+EXPOSE 5050
 WORKDIR /opt/pdflatex
 
 # install texlive 
@@ -21,8 +21,8 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
 # Optional: install build tools 
 # To compile and install native addons from npm you may also need to install build tools: 
 RUN npm -g update npm
-COPY index.js .
 COPY package.json .
 RUN npm install
+COPY index.js .
 
 CMD ["node", "/opt/pdflatex/index.js"]
