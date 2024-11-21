@@ -29,7 +29,7 @@ RUN curl -fsSL https://deno.land/install.sh | sh -s -- -y
 # To compile and install native addons from npm you may also need to install build tools: 
 COPY deno.json .
 COPY index.ts .
-RUN deno install
+RUN /root/.deno/bin/deno install
 
 CMD ["/root/.deno/bin/deno", "--allow-run", "--allow-net", "--allow-env", "--allow-write", "--allow-read", "/opt/pdflatex/index.ts"]
 #CMD ["sleep", "100000000"]
