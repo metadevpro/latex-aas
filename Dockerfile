@@ -9,20 +9,26 @@ WORKDIR /opt/pdflatex
 RUN apt-get update -qqy && \
     apt-get install -y --no-install-recommends \
         curl \
+        unzip \
         ca-certificates \
-        texlive-latex-base \
-        texlive-latex-extra \
-        ${INSTALL_EXTRA_PACKAGES} 
+        texlive-full 
 
-# install nodejs v6 
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
+# texlive-font-utils \
+# texlive-fonts-recommended \
+# texlive-fonts-extra \
+# texlive-latex-base \
+# texlive-latex-extra \
+# texlive-latex-recommended \
+# texlive-lang-spanish \
+# ${INSTALL_EXTRA_PACKAGES} 
+
+# install deno
+RUN curl -fsSL https://deno.land/install.sh | sh -s -- -y
 
 # Optional: install build tools 
 # To compile and install native addons from npm you may also need to install build tools: 
-RUN npm -g update npm
-COPY package.json .
-RUN npm install
-COPY index.js .
+COPY deno.json .
+COPY index.ts .
 
-CMD ["node", "/opt/pdflatex/index.js"]
+CMD ["/root/.deno/bin/deno", "--allow-run", "--allow-net", "--allow-env", "--allow-write", "--allow-read", "/opt/pdflatex/index.ts"]
+#CMD ["sleep", "100000000"]
