@@ -39,7 +39,7 @@ const generate = async (
 ) => {
   const t0 = performance.now();
   const filepath = await Deno.makeTempFile({
-    prefix: "latex",
+    prefix: "job",
     suffix: ""
   });
 
@@ -92,7 +92,7 @@ const generateFromZip = async (
 ) => {
   const t0 = performance.now();
   const filepath = await Deno.makeTempFile({
-    prefix: "latex",
+    prefix: "job",
     suffix: ""
   });
 
