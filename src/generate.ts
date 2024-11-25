@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { performance } from "node:perf_hooks";
 import { exec } from "node:child_process";
-import { replyJson } from "./util.ts";
+import { getEllapsedMs, getFromQueryString, replyJson } from "./util.ts";
 import { createTempDir } from "./fs.ts";
 
 export const generate = async (
@@ -11,27 +11,27 @@ export const generate = async (
   res: http.ServerResponse<http.IncomingMessage>
 ) => {
   const t0 = performance.now();
-  const filepath = await Deno.makeTempFile({
-    prefix: "job",
-    suffix: ""
-  });
+  const id = getFromQueryString(req, "id", "-");
+  const dir = await createTempDir();
 
-  const writeStream = fs.createWriteStream(filepath);
+  const basename = `job`;
+  const fileName = `${basename}.tex`;
+  const filePath = path.join(dir, fileName);
+  const pdfFilePath = `${path.join(dir, basename)}.pdf`;
+
+  const writeStream = fs.createWriteStream(fileName);
   writeStream.on("close", function () {
     // execute pdflatex on that latex source
-    const dir = path.dirname(filepath),
-      basename = path.basename(filepath, ".tmp");
     exec(
-      `pdflatex -interaction=batchmode -output-directory=${dir} ${filepath}`,
+      `pdflatex -interaction=batchmode -output-directory=${dir} ${fileName}`,
       (err, _stdout, stderr) => {
         //
         // if we there are errors respond in plain text
         // explaining what happened
         //
         if (err || stderr) {
-          const t1 = performance.now();
-          const ellapsedMs = t1 - t0;
-          console.log(`! ${filepath} ${ellapsedMs} ms`);
+          const ellapsedMs = getEllapsedMs(t0);
+          console.log(`! Id: ${id} ${filePath} ${ellapsedMs} ms`);
           replyJson(
             res,
             500,
@@ -46,9 +46,9 @@ export const generate = async (
         //
         // else just send the output pdf as response
         //
-        const t1 = performance.now();
-        console.log(`< ${filepath} ${t1 - t0} ms`);
-        fs.createReadStream(`${path.join(dir, basename)}.pdf`).pipe(res);
+        const ellapsed = getEllapsedMs(t0);
+        console.log(`< Id: ${id} ${pdfFilePath} ${ellapsed.toFixed(2)} ms`);
+        fs.createReadStream(pdfFilePath).pipe(res);
       }
     );
   });
@@ -56,7 +56,7 @@ export const generate = async (
   //
   // pipe the body of the request to our tmp file
   //
-  console.log(`> ${filepath}`);
+  console.log(`> Id: ${id} ${filePath}`);
   req.pipe(writeStream);
 };
 
@@ -65,55 +65,61 @@ export const generateFromZip = async (
   res: http.ServerResponse<http.IncomingMessage>
 ) => {
   const t0 = performance.now();
-  const filepath = await Deno.makeTempFile({
-    prefix: "job",
-    suffix: ""
-  });
+  const id = getFromQueryString(req, "id", "-");
 
-  const writeStream = fs.createWriteStream(filepath);
+  const dir = await createTempDir();
+  const basename = `job`;
+  const fileName = `${basename}.zip`;
+  const filePath = path.join(dir, fileName);
+
+  const writeStream = fs.createWriteStream(filePath);
   writeStream.on("close", function () {
-    // execute pdflatex on that latex source
-    const dir = path.dirname(filepath),
-      basename = path.basename(filepath, ".tmp");
-    exec(`unzip ${filepath} -d ${dir}`, (err, _stdout, stderr) => {
+    // unzip it
+    exec(`unzip ${filePath} -d ${dir}`, (err, _stdout, stderr) => {
       //
       // if we there are errors respond in plain text
       // explaining what happened
       //
       if (err || stderr) {
-        const t1 = performance.now();
-        const ellapsedMs = t1 - t0;
-        console.log(`! ${filepath} ${ellapsedMs} ms`);
+        const ellapsedMs = getEllapsedMs(t0);
+        console.log(`! Id: ${id} ${filePath} ${ellapsedMs.toFixed(2)} ms`);
         replyJson(
           res,
           500,
           JSON.stringify({
             error: "Error unzipping file " + ((err && err.message) || stderr),
-            ellapsedMs
+            ellapsedMs,
+            id
           })
         );
         return;
       }
 
-      const texFilepath = "examen"; // todo: find main.tex
+      // todo: read properties.
+      const compileTimes = 1;
+      const texFileName = "examen"; // todo: find main.tex
+
+      const texFilePath = path.join(dir, `${texFileName}.tex`);
+      const pdfFilePath = path.join(dir, `${texFileName}.pdf`);
 
       // const mode = "nonstopmode";
       const mode = "batchmode";
 
       exec(
-        `pdflatex -interaction=${mode} -output-directory=${dir} ${texFilepath}.tex`,
+        `pdflatex -interaction=${mode} -output-directory=${dir} ${texFileName}.tex`,
         (err2, _stdout2, stderr2) => {
           //
           // if we there are errors respond in plain text
           // explaining what happened
           //
           if (err2 || stderr2) {
-            const t1 = performance.now();
-            const ellapsedMs = t1 - t0;
+            const ellapsedMs = getEllapsedMs(t0);
             const errorLog = fs
-              .readFileSync(`${path.join(dir, texFilepath)}.log`)
+              .readFileSync(`${path.join(dir, texFileName)}.log`)
               .toString();
-            console.log(`! ${filepath} ${ellapsedMs} ms`);
+            console.log(
+              `! Id: ${id} ${texFilePath}.log ${ellapsedMs.toFixed(2)} ms`
+            );
             replyJson(
               res,
               500,
@@ -124,7 +130,8 @@ export const generateFromZip = async (
                 signal: err2!.signal,
                 cmd: err2!.cmd,
                 errorLog,
-                ellapsedMs
+                ellapsedMs,
+                id
               })
             );
             return;
@@ -133,8 +140,8 @@ export const generateFromZip = async (
           //
           // else just send the output pdf as response
           //
-          const t1 = performance.now();
-          console.log(`< ${filepath} ${t1 - t0} ms`);
+          const ellapsedMs = getEllapsedMs(t0);
+          console.log(`< Id: ${id} ${pdfFilePath} ${ellapsedMs.toFixed(2)} ms`);
           fs.createReadStream(`${path.join(dir, basename)}.pdf`).pipe(res);
         }
       );
@@ -144,6 +151,6 @@ export const generateFromZip = async (
   //
   // pipe the body of the request to our tmp file
   //
-  console.log(`> ${filepath}`);
+  console.log(`> Id: ${id}`);
   req.pipe(writeStream);
 };

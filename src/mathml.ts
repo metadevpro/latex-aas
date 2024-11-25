@@ -1,5 +1,10 @@
 import * as http from "node:http";
-import { getBody, replyJson } from "./util.ts";
+import {
+  getBody,
+  getEllapsedMs,
+  getFromQueryString,
+  replyJson
+} from "./util.ts";
 import { performance } from "node:perf_hooks";
 import mathml2latex from "npm:mathml-to-latex@^1.4.3";
 
@@ -8,6 +13,7 @@ export const convertMathMLToLatex = async (
   res: http.ServerResponse<http.IncomingMessage>
 ) => {
   const t0 = performance.now();
+  const id = getFromQueryString(req, "id", "-");
   const body = await getBody(req);
   const mathml = JSON.parse(body).mathml;
 
@@ -16,7 +22,8 @@ export const convertMathMLToLatex = async (
       res,
       400,
       JSON.stringify({
-        error: "No se proporcionó MathML en el cuerpo de la solicitud."
+        error: "No se proporcionó MathML en el cuerpo de la solicitud.",
+        id
       })
     );
   }
@@ -30,10 +37,12 @@ export const convertMathMLToLatex = async (
     replyJson(
       res,
       500,
-      JSON.stringify({ error: "Error converting MathML to LaTeX." })
+      JSON.stringify({ error: "Error converting MathML to LaTeX.", id })
     );
   } finally {
-    const t1 = performance.now();
-    console.log(`/mathml ${t1 - t0} ms Status: ${result}`);
+    const ellapsed = getEllapsedMs(t0);
+    console.log(
+      `/mathml Id: ${id} ${ellapsed.toFixed(2)} ms Status: ${result}`
+    );
   }
 };

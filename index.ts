@@ -10,10 +10,12 @@ const server = http.createServer(
     req: http.IncomingMessage,
     res: http.ServerResponse<http.IncomingMessage>
   ) => {
-    const url = req.url || "";
-    // console.log(url);
+    const parts = (req.url || "").split("?");
+    const path = parts.length > 0 ? parts[0] : "";
 
-    switch (url) {
+    //console.log(req.url);
+
+    switch (path) {
       case "/ping":
         return ping(req, res);
       case "/version":
