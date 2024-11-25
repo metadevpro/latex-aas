@@ -1,0 +1,1280 @@
+
+\documentclass[12pt,a4paper,twoside]{article} 
+
+
+\RequirePackage{etoolbox}
+\RequirePackage[framemethod=tikz]{mdframed}
+\RequirePackage{titling}
+\RequirePackage[bottom,hang,flushmargin,ragged]{footmisc}
+\RequirePackage{fancyhdr}
+\RequirePackage{adjustbox}
+\RequirePackage{adforn}
+\RequirePackage{booktabs}
+\RequirePackage{array} 
+\RequirePackage{caption}
+\RequirePackage{setspace}
+\RequirePackage{iflang}
+\RequirePackage{supertabular}
+\RequirePackage{listings}
+\RequirePackage{csquotes}
+\RequirePackage{ragged2e}
+\RequirePackage{subcaption}
+\RequirePackage{stfloats} 
+
+\usepackage{svg}
+\usepackage{ifthen}
+\usepackage{microtype} 
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{tcolorbox}
+\usepackage{changepage}
+
+
+% Configuración de codificación y fuentes para pdflatex
+\usepackage[T1]{fontenc} % Codificación de salida de texto
+\usepackage[utf8]{inputenc} % Codificación de entrada
+\usepackage{helvet} % Usa Helvetica como fuente principal
+\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage[T1]{fontenc}
+%\usepackage[utf8]{inputenc}
+%\usepackage[scaled=0.92]{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{pdfpages} % Para manipular páginas
+\usepackage{pgffor}
+\usepackage{mathtools}
+\usepackage{etoolbox}
+\usepackage{ifoddpage}
+\usepackage{enumitem}
+\tcbuselibrary{breakable}
+\usepackage{adforn}
+
+\usepackage[table,xcdraw]{xcolor} % Para color en tablas
+\usepackage{longtable} % Para tablas que pueden ir más allá de una página
+\usepackage{array} % Para mejor control de las columnas
+\usepackage{pifont} % Para incluir checkboxes
+
+% Configura el interlineado a 1.5
+\onehalfspacing
+
+% Definir color personalizado
+% \definecolor{customBlue}{rgb}{0.2, 0.6, 1.0}
+\definecolor{customBlue}{rgb}{0.0, 0.596, 0.804}
+\definecolor{materialColor}{rgb}{0.98, 0.98, 0.98} 
+\definecolor{cellGray}{rgb}{0.9, 0.9, 0.9} 
+
+
+\renewcommand{\arraystretch}{1.5} % Espaciado entre filas
+\renewcommand{\headrulewidth}{0pt}      % No header rule
+
+\newcommand{\htmlcheck}{%
+  \tikz[baseline=-0.5ex]{
+    \draw[thick, gray] (0,0) rectangle (0.5,0.5); 
+    \draw[thick, gray] (0.1,0.25) -- (0.2,0.1) -- (0.4,0.4); 
+  }%
+}
+
+% Ajustes de geometría
+\geometry{
+    left=1cm, 
+    right=1cm, 
+    top=2.5cm,  % Aumentamos el margen superior
+    bottom=0.5cm,
+	headsep=1.5cm,
+    includefoot
+}
+
+\newlength{\espacioRestanteMain}
+
+\newcommand{\freespaceBox}{
+	% Free Box Space
+	
+	\setlength{\espacioRestanteMain}{\dimexpr\textheight-\pagetotal-\baselineskip-15pt\relax}
+	
+	\ifthenelse{\lengthtest{\espacioRestanteMain > 3cm}}{
+		% Si hay suficiente espacio, dibuja el cuadro
+		\noindent
+		\colorbox{gray!10}{
+		  \begin{minipage}[t][\espacioRestanteMain][c]{0.98\textwidth}
+			\begin{center}
+			  \fontsize{14}{21}\selectfont
+			  \textcolor{gray!80}
+			  {
+			  NO UTILIZAR ESTA PARTE DE LA HOJA.\\
+			  CONTINÚA A PARTIR DE LA SIGUIENTE\\
+			  PÁGINA.
+			  }
+			\end{center}
+		  \end{minipage}
+		}
+	}{}
+}
+
+
+% Definir el contenido del encabezado personalizado
+\newcommand{\customheader}{
+    \noindent
+    \begin{minipage}{0.2\textwidth}
+        \fontsize{8}{12}\selectfont 
+        DATOS\\ PERSONALES
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.75\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=gray!50, width=\linewidth, left=5pt, right=0pt, boxrule=0.5pt, sharp corners, boxsep=0pt]
+            \fontsize{8}{12}\selectfont 
+            Nombre y apellidos:\\[10pt]
+            DNI/cédula:
+        \end{tcolorbox}
+    \end{minipage}
+}
+
+
+% Limpia el encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{} 
+
+% Define el pie de pagina
+\setlength{\footskip}{-0.6cm} 
+%\fancyfoot[L]{\includegraphics[height=0.6cm]{figures/logofooter.jpg }}
+%\fancyfoot[C]{\raisebox{0.2cm}{\scalebox{0.7}{ F4FC714F }}} % Texto en el centro
+%\fancyfoot[R]{\raisebox{0.2cm}{\scalebox{0.7}{Página \thepage}}} 
+
+\fancyfoot[L]{
+  \makebox[0pt][l]{
+    \hspace{-0.8cm}
+    \includegraphics[height=0.6cm]{figures/logofooter.jpg }
+  }
+}
+\fancyfoot[C]{
+  \raisebox{0.2cm}{\scalebox{0.7}{ F4FC714F }}
+}
+\fancyfoot[R]{
+  \makebox[0pt][r]{
+    \raisebox{0.2cm}{\scalebox{0.7}{Página \thepage}}
+    \hspace{-0.8cm}
+  }
+}
+
+
+\renewcommand{\footrule}{\color{customBlue}\hrule width \headwidth height \footrulewidth \color{black}}
+\renewcommand{\footrulewidth}{0.4pt} 
+\def\footrule{{\if@fancyplain\let\footrulewidth\plainfootrulewidth\fi
+	\vskip-\footrulewidth
+    {\color{customBlue}\leavevmode\rlap{\hspace*{-2in}\rule{2\paperwidth}{\footrulewidth}}}
+    \vskip\footruleskip}}
+
+
+% Pie de página para la primera página
+\fancypagestyle{plain}{
+    \fancyhf{}
+	\fancyfoot[L]{
+	  \makebox[0pt][l]{
+		\hspace{-0.8cm}
+		\includegraphics[height=0.6cm]{figures/logofooter.jpg }
+	  }
+	}
+	\fancyfoot[C]{
+	  \raisebox{0.2cm}{\scalebox{0.7}{ F4FC714F }}
+	}
+	\fancyfoot[R]{
+	  \makebox[0pt][r]{
+		\raisebox{0.2cm}{\scalebox{0.7}{Página \thepage}}
+		\hspace{-0.8cm}
+	  }
+	}
+}
+
+\fancyhead[RO]{\customheader}
+
+% Change Margins in odd pages
+\makeatletter
+\patchcmd\@outputpage{\topmargin}{
+    \ifnum\count\z@=1 
+        -3.7cm 
+    \else
+        \ifodd\count\z@ -2.0cm\else -3.5cm\fi 
+    \fi
+}{}{}
+
+\patchcmd\@outputpage{\footskip}{
+    \ifnum\count\z@=1 
+        0cm 
+    \else
+        \ifodd\count\z@ 0cm\else 1.5cm\fi 
+    \fi
+}{}{}
+\makeatother
+
+\begin{document}
+\raggedbottom
+
+% CoverPage
+
+\newgeometry{top=0.5cm, bottom=1.9cm, right=1cm, left=1cm}
+\thispagestyle{plain}
+
+\noindent\color{customBlue}\rule{\textwidth}{4pt}
+\vspace{3pt}
+
+\begin{minipage}{0.2\textwidth} % Ajusta el ancho de la imagen
+	\hspace{2cm}
+	\includegraphics[width=\linewidth]{figures/logoheader.jpg} 
+\end{minipage}%
+\hspace{0.05\textwidth} % Espacio entre imagen y texto
+\begin{minipage}{0.7\textwidth} % Ajusta el ancho del texto
+	\vspace*{10pt} % Llena el espacio superior
+	\begin{flushright}
+		\hspace{-1cm}
+		\color{black}{\scalebox{0.7} { Universidad Internacional de La Rioja }}
+	\end{flushright}
+\end{minipage}
+
+\vspace{10pt}
+\noindent\color{customBlue}\rule{\textwidth}{0.5pt}
+
+
+% Datos personales
+\vspace{10pt}
+\color{black}
+\begin{minipage}{0.2\textwidth}
+	\fontsize{8}{12}\selectfont 
+	\hspace*{30pt}
+	DATOS\\ 
+    \hspace*{30pt}
+    PERSONALES
+\end{minipage}
+\begin{minipage}{0.8\textwidth}
+	\begin{tcolorbox}[colback=white, colframe=gray!50, width=0.95\textwidth, left=5pt, right=0pt, boxrule=0.5pt, sharp corners, boxsep=0pt]
+	\fontsize{8}{12}\selectfont 
+	Nombre y apellidos:\\[10pt]
+	DNI/cédula:
+\end{tcolorbox}
+\end{minipage}
+
+% ESTUDIO
+\vspace{10pt}
+\color{black}
+\begin{minipage}{0.2\textwidth}
+	\fontsize{8}{12}\selectfont
+	\hspace*{30pt}
+	ESTUDIO
+\end{minipage}
+\begin{minipage}{0.8\textwidth}
+	\begin{tcolorbox}[colback=white, colframe=gray!50, width=0.95\textwidth, left=5pt, right=0pt, boxrule=0.5pt, sharp corners, boxsep=0pt]
+	\fontsize{8}{12}\selectfont 
+	Máster Universitario en Psicología General Sanitaria (Plan 2016)
+	\end{tcolorbox}
+\end{minipage}
+
+% ASIGNATURA
+\vspace{10pt}
+\color{black}
+\begin{minipage}{0.2\textwidth}
+	\fontsize{8}{12}\selectfont
+	\hspace*{30pt}
+	ASIGNATURA
+\end{minipage}
+\begin{minipage}{0.8\textwidth}
+	\begin{tcolorbox}[colback=white, colframe=gray!50, width=0.95\textwidth, left=5pt, right=0pt, boxrule=0.5pt, sharp corners, boxsep=0pt]
+	\fontsize{8}{12}\selectfont 
+	3730101001.- Psicología General Sanitaria. Fundamentos Científicos y Profesionales
+	\end{tcolorbox}
+\end{minipage}
+
+% DETALLES
+\vspace{10pt}
+\color{black}
+\begin{minipage}{0.2\textwidth}
+	\fontsize{8}{12}\selectfont 
+	\hspace{30pt}
+	DETALLES
+\end{minipage}
+\begin{minipage}{0.8\textwidth}
+	\begin{tcolorbox}[
+		colback=white, colframe=gray!50, width=0.95\textwidth, 
+		left=5pt, right=0pt, 
+		boxrule=0.5pt, sharp corners, 
+		boxsep=0pt, 
+		]
+		\fontsize{8}{12}\selectfont
+		\begin{minipage}{0.32\textwidth}
+			Modelo: C | F4FC714F | ORD
+		\end{minipage}
+		\begin{minipage}{0.32\textwidth}
+			Periodo: 3410 | Segmento: 
+		\end{minipage}
+		\begin{minipage}{0.32\textwidth}
+			Fechas: 19/01/2024 - 24/01/2024
+		\end{minipage}
+	\end{tcolorbox}
+\end{minipage}
+
+% Espacio para la firma
+\begin{tikzpicture}[remember picture, overlay]
+	\draw[draw=gray!50, line width=0.5pt] (9, -17) rectangle ++(9cm, 3cm); 
+\end{tikzpicture}
+\restoregeometry
+
+% End coverPAge
+
+% Instrucciones
+
+\newpage
+
+\begin{tcolorbox}[colback=white, colframe={customBlue}, width=\textwidth, left=5pt, right=0pt, boxrule=0.5pt, rounded corners, boxsep=3pt]
+	\fontsize{14}{21}\selectfont\bfseries 
+	INSTRUCCIONES GENERALES
+\end{tcolorbox}
+
+% Aqui las instrucciones
+\noindent\begin{minipage}{0.97\textwidth}
+	\fontsize{12}{18}\selectfont
+	\begin{enumerate}[label=.]\item Ten disponible tu documentación oficial para identificarte, en el caso de que se te solicite.\item Rellena tus datos personales en todos los espacios fijados para ello y lee atentamente todas las preguntas antes de empezar.\item Las preguntas se contestarán en la lengua vehicular de esta asignatura.\item Si tu examen consta de una parte tipo test, indica las respuestas en la plantilla según las características de este.\item Debes contestar en el documento adjunto, respetando en todo momento el espaciado indicado para cada pregunta. Si este es en formato digital, los márgenes, el interlineado, fuente y tamaño de letra vienen dados por defecto y no deben modificarse. En cualquier caso, asegúrate de que la presentación es suficientemente clara y legible.\item Entrega toda la documentación relativa al examen, revisando con detenimiento que los archivos o documentos son los correctos. La entrega del examen en blanco o de un documento distinto del facilitado por UNIR supondrá una calificación de "0".\item Durante el examen y en la corrección por parte del docente, se aplicará el Reglamento de Evaluación Académica de UNIR que regula las consecuencias derivadas de las posibles irregularidades y prácticas académicas incorrectas con relación al plagio y uso inadecuado de materiales y recursos.\end{enumerate}\
+\end{minipage}
+\\
+
+\freespaceBox
+
+
+
+\newpage
+\begin{tcolorbox}[colback=white, colframe={customBlue}, width=\textwidth, left=5pt, right=0pt, boxrule=0.5pt, rounded corners, boxsep=3pt]
+	\fontsize{14}{21}\selectfont\bfseries 
+PERMISOS
+\end{tcolorbox}
+
+\vspace{10pt}
+
+
+	\renewcommand{\arraystretch}{1.5} % Espaciado entre filas
+	\arrayrulecolor{gray} % Color de las líneas de la tabla
+    
+	
+		
+            \begin{longtable}{>{\arraybackslash}m{0.38\textwidth}|>{\arraybackslash}m{0.58\textwidth}}
+              \cellcolor{cellGray}\textbf{Materiales} & \textbf{} \\ \hline
+              \cellcolor{cellGray}(nombre)+2: Material descripcion test & \htmlcheck \\ \hline 
+            \end{longtable}
+		
+	
+		
+	
+\freespaceBox
+
+
+% Agregar los grupos del examen (grupos de preguntas y anexos/láminas)
+\newpage
+	    \begin{tcolorbox}[colback=white, colframe={customBlue}, width=\textwidth, left=5pt, right=0pt, boxrule=0.5pt, rounded corners, boxsep=3pt]
+            \fontsize{14}{21}\selectfont\bfseries 
+            PUNTUACION
+        \end{tcolorbox}
+        
+        {\noindent\fontsize{14}{21}\selectfont\textbf{
+            1. Grupo preguntas abiertas resp líneas 
+            }\\
+        }
+            
+        
+        {\noindent\begin{minipage}{\textwidth}
+            {
+                En 1878 el Club Inglés de Río Tinto, coincidiendo con la llegada a Huelva del Dr. Williams Alexander Mackay, verdadero promotor del football en la capital de Huelva,\\decidió crear en la capital onubense una «Sociedad de Juego de Pelota» que mantuvo actividad en años sucesivos (1885, 1886, 1887).[cita requerida] Esta sociedad dependiente\\del Club Inglés de la cuenca minera ya practicaba el football entre otros sports típicamente ingleses.\\
+            }
+        \end{minipage}
+        }
+        
+        \begin{itemize}[left=1.5cm, itemsep=0.02em] 
+            \item Puntuación máxima 10 puntos
+            \item Respuesta correcta 2 puntos
+            \item Cada respuesta incorrecta resta  puntos
+        \end{itemize}
+
+        
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 1.} \\
+                    {
+                        PA6 - ¿Quién interpretó a Daenerys Targaryen en la serie 'Juego de Tronos'? (cambiada)\\
+                    }\par\noindent Responde en 3 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 2.} \\
+                    {
+                        PA4 - ¿Cuáles son las tres grandes vueltas del ciclismo?\\
+                    }\par\noindent Responde en 2 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 3.} \\
+                    {
+                        PA14 - ¿Quién creo los cómics de 'Spiderman'?\\
+                    }\par\noindent Responde en 5 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 4.} \\
+                    {
+                        PA8 - ¿Cuál es el valor de X en esta operación?\\﻿4 x + 2 = 84x+2=8﻿\\
+                    }\par\noindent Responde en 1 línea.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 5.} \\
+                    {
+                        PA2 - ¿En qué país se encuentra el estadio de Wembley? cambio\\
+                    }\par\noindent Responde en 2 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+                \freespaceBox
+            
+\newpage
+	    
+        
+        {\noindent\fontsize{14}{21}\selectfont\textbf{
+            2. Grupo preguntas abiertas resp caras 
+            }\\
+        }
+            
+        
+        {\noindent\begin{minipage}{\textwidth}
+            {
+                A finales del siglo xix, desde al menos la década de los años 1870 (1873 en la ciudad),\\comenzó a practicarse foot-ball en la provincia de Huelva (San Juan del Puerto). Este deporte, traído por inmigrantes de origen anglosajón que\\trabajaban en empresas mineras de la zona e inicialmente practicado por estas, se afianzó rápidamente entre la población local. Su práctica no llegó entonces\\desde el norte a través de los Pirineos, sino desde el sur, a partir de ahí la práctica de este deporte se hizo común en otras regiones de la península 
+                ibérica.8\\
+            }
+        \end{minipage}
+        }
+        
+        \begin{itemize}[left=1.5cm, itemsep=0.02em] 
+            \item Puntuación máxima 10 puntos
+            \item Respuesta correcta 2.5 puntos
+            \item Cada respuesta incorrecta resta  puntos
+        \end{itemize}
+
+        
+        
+            \noindent\textbf{Pregunta 1.} \\
+                {
+                    PA6 - ¿Quién interpretó a Daenerys Targaryen en la serie 'Juego de Tronos'?\\
+                }\par\noindent Responde en 3 caras.\\\\
+                \freespaceBox
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                
+                    \newpage
+                    \null
+                
+        
+            \noindent\textbf{Pregunta 2.} \\
+                {
+                    PA4 - ¿Cuáles son las tres grandes vueltas del ciclismo?\\
+                }\par\noindent Responde en 2 caras.\\\\
+                \freespaceBox
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                
+                    \newpage
+                    \null
+                
+        
+            \noindent\textbf{Pregunta 3.} \\
+                {
+                    PA14 - ¿Quién creo los cómics de 'Spiderman'?\\
+                }\par\noindent Responde en 5 caras.\\\\
+                \freespaceBox
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                    \newpage
+                    \null
+                
+                
+                    \newpage
+                    \null
+                
+        
+            \noindent\textbf{Pregunta 4.} \\
+                {
+                    PA8 - ¿Cuál es el valor de X en esta operación?\\﻿4 x + 2 = 84x+2=8﻿\\
+                }\par\noindent Responde en 1 cara.\\\\
+                \freespaceBox
+                    \newpage
+                    \null
+                
+                
+\newpage{\noindent\fontsize{14}{21}\selectfont\textbf{
+            3. Grupo preguntas test 
+            }\\
+        }
+            
+        % Texto en tamaño de fuente de 11 puntos
+        {\noindent\begin{minipage}{\textwidth}
+            {
+                La primera junta oficial del club se celebró el día 18 de diciembre (publicada dos días después en el diario La Provincia) y aludía alfomento de diferentes sports, entre ellos el foot-ball. Un lunes 23 de diciembre de 1889 a las 22:00 horas, en el salón de chimeneas del antiguo Hotel Colón se firmó su acta de 
+                fundación.10  Esa reunión había sidoconvocada por el Doctor Mackay y el empresario alemán afincado en la ciudad Guillermo Sundheim pero también asistieron importantes personalidadescomo Charles Adams -que fue nombrado presidente de honor- J. Crofto, Hugo Lindemann, A. Lawson, G.M. Speirs, Gout, E. W. Palin y los dos únicos españoles:Pedro Soto y José Muñoz.11​ Por ello el recién creado Huelva Recreation Club se convirtió en el primer club de fútbol en ser fundado en España, siendo por tanto el club decano del balompié español.Pocos días después de esta reunión se recibió de Londres, en el barco Inglés D. Hugo un cargamento con materiales y equipaciones para la práctica del fútbol y del cricket.12​Desde su oficialización el Recreation Club organizaba partidas de cricket y football contra equipos formados por las tripulaciones de los barcos ingleses que llegaban al Puerto de Huelva.13​Pero el Huelva Recreation también jugó contra equipos de provincias y áreas próximas a Huelva, entre ellos el Club Inglés de Riotinto y el Sevilla Football Club. El 28 de febrero de 1890 apareceen el diario La Provincia una nota de prensa en la que Isaías White invita al Recreation Club a disputar un partido de fútbol en la ciudad hispalense, en el Hipódromo de Tablada, contra un equipoinglés que habían creado recientemente.
+            }
+        \end{minipage}
+        }
+        \vspace{1\baselineskip}
+
+
+        % Lista con sangría y tamaño de fuente de 11 puntos
+        \begin{itemize}[left=1.5cm, itemsep=0.02em] 
+            \item Puntuación máxima 10 puntos
+            \item Respuesta correcta 1 puntos
+            \item Cada respuesta incorrecta resta 1 puntos
+        \end{itemize}
+        \vspace{1\baselineskip}\\
+
+        \noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			1.PT20 - ¿Cómo se llama el personaje de Úrsula Corberó en 'La Casa de Papel'?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Paquita\small\item Dolores\small\item Japón\small\item Tokio
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			2.PT28 - ¿Cuántas veces ha ganado España Eurovisión?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item 1 vez\small\item 2 veces\small\item 3 veces
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			3.PT29 - ¿En qué año murió Diana de Gales?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item 1995\small\item 2001\small\item 1997
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			4.PT11 - ¿En qué año se estreno 'Eduardo Manostijeras'?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item 1980\small\item 1985\small\item 1990
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			5.PT25 - ¿A qué banda española le volvía loco la madre de José?﻿\\\\ \includegraphics[width=0.9\textwidth, keepaspectratio]{figures/image_4870d79b-b383-4179-a8fe-30b11a6310ea.jpeg}
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item La banda del patio\small\item Jarabe de palo\small\item Canto del Loco\small\item Los Ronaldos
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			6.PT18 - ¿De qué serie es popular el personaje de Walter White?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Entrevías\small\item Juego de Tronos\small\item Crónicas Vampíricas\small\item Breaking Bad
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			7.PT12 - ¿Quién interpretó a Hermione Granger en 'Harry Potter'?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Susana Griso\small\item Mónica Cruz\small\item Angelina Jolie\small\item Emma Watson
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			8.PT30 - ¿Cómo se llama el marido de Elsa Pataky?﻿\\\\ \includegraphics[width=0.9\textwidth, keepaspectratio]{figures/image_4def1294-ccef-4fd2-b468-5c6dded4923c.webp}
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Machine Gun Kelly\small\item Chris Hemsworth\small\item Benito
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			9.PT14 - ¿Cómo se llama el protagonista de 'Bola de Dragón'?
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Naruto\small\item Sasuke\small\item Vegeta\small\item Goku
+		\end{enumerate}
+		}\vspace{1\baselineskip}\\\noindent\parbox[t]{0.9\textwidth}{
+		\textbf{
+            \small
+			10.PT10 - ¿Dónde está Transilvania?﻿\\\\ \includegraphics[width=0.9\textwidth, keepaspectratio]{figures/image_07f6e23d-02e0-473d-8540-0e3fc18e00ab.jpeg}
+		}
+		\begin{enumerate}[label=\Alph*., itemsep=0.02em]
+			\small\item Hungría\small\item Rumanía
+		\end{enumerate}
+		}
+ 
+	
+
+	
+
+	
+            \newpage
+            \begin{tcolorbox}[colback=white, colframe={customBlue}, width=\textwidth, left=5pt, right=0pt, boxrule=0.5pt, rounded corners, boxsep=3pt]
+                \fontsize{14}{21}\selectfont\bfseries 
+               TABLA DE RESPUESTAS
+            \end{tcolorbox}
+            \renewcommand{\arraystretch}{1.5}
+            \begin{longtable}{|>{\centering\arraybackslash}m{10cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|}
+                \hline
+                \centering
+                
+                \cellcolor{gray!20}\textbf{Preguntas / Opciones} 
+    
+                
+                    & \textbf{ A }
+                
+                    & \textbf{ B }
+                
+                    & \textbf{ C }
+                
+                    & \textbf{ D }
+                
+                \hline
+                \endfirsthead
+
+                % Esto es para definir el encabezado de cada nueva página
+                \hline
+                \centering
+                \cellcolor{gray!20}\textbf{Preguntas / Opciones} 
+                
+                
+                    & \textbf{ A }
+                
+                    & \textbf{ B }
+                
+                    & \textbf{ C }
+                
+                    & \textbf{ D }
+                
+                \hline
+                \endhead
+
+                % Este comando opcional indica el final de la tabla en la última página
+                %\hline
+                %\endfoot
+    
+                \centering
+                
+                
+                    \cellcolor{gray!20} \textbf{ 1 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 2 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 3 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 4 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 5 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 6 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 7 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 8 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 9 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                    \\ \hline
+                
+                    \cellcolor{gray!20} \textbf{ 10 }
+                     
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            
+
+                            
+                                 & \textbf{}
+                            
+
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                        
+                            & \cellcolor{gray!20} \textbf{}
+                        
+                    
+                    \\ \hline
+                
+    
+            \end{longtable}
+
+            \freespaceBox
+
+    
+    
+
+	
+\newpage
+	    
+        
+        {\noindent\fontsize{14}{21}\selectfont\textbf{
+            4. Grupo de preguntas abiertas mixto 
+            }\\
+        }
+            
+        
+        {\noindent\begin{minipage}{\textwidth}
+            {
+                
+            }
+        \end{minipage}
+        }
+        
+        \begin{itemize}[left=1.5cm, itemsep=0.02em] 
+            \item Puntuación máxima 10 puntos
+            \item Respuesta correcta 2 puntos
+            \item Cada respuesta incorrecta resta  puntos
+        \end{itemize}
+
+        
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 1.} \\
+                    {
+                        PA6 - ¿Quién interpretó a Daenerys Targaryen en la serie 'Juego de Tronos'?\\
+                    }\par\noindent Responde en 3 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 2.} \\
+                    {
+                        PA4 - ¿Cuáles son las tres grandes vueltas del ciclismo?\\
+                    }\par\noindent Responde en 2 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 3.} \\
+                    {
+                        PA14 - ¿Quién creo los cómics de 'Spiderman'?\\
+                    }\par\noindent Responde en 5 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 4.} \\
+                    {
+                        PA2 - ¿En qué país se encuentra el estadio de Wembley?\\
+                    }\par\noindent Responde en 5 líneas.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                    \item
+                
+                \end{itemize}
+        
+            \noindent\parbox[t]{\textwidth}
+                {
+                    \textbf{Pregunta 5.} \\
+                    {
+                        PA8 - ¿Cuál es el valor de X en esta operación?\\﻿4 x + 2 = 84x+2=8﻿\\
+                    }\par\noindent Responde en 1 línea.\\
+                \\
+                }
+                \begin{itemize}[left=1.5cm,label={}, itemsep=0.02em] 
+                
+                    \item
+                
+                \end{itemize}
+                \freespaceBox
+            
+\newpage
+    \large\noindent\textbf{ANEXOS}\\\\
+            \noindent\normalsize\textbf{Grupo Grupo preguntas abiertas resp líneas }\\
+                        \noindent\normalsize\textbf{Pregunta 2 }
+                        \\\\
+                        \includegraphics[width=0.9\textwidth, keepaspectratio]{figures/boton_run.jpg}
+                        \\\\
+                    \newpage
+            \noindent\normalsize\textbf{Grupo Grupo preguntas abiertas resp caras }\\
+                        \noindent\normalsize\textbf{Pregunta 1 }
+                        \\\\
+                        \includegraphics[width=0.9\textwidth, keepaspectratio]{figures/boton_run.jpg}
+                        \\\\
+                    \noindent\normalsize\textbf{Pregunta 2 }
+                        \\\\
+                        \includepdf[pages=-,pagecommand={},width=\textwidth]{figures/Vacio.pdf}
+                    \newpage
+
+% Draft pages
+
+    \newpage 
+    \begin{tikzpicture}[remember picture,overlay]
+
+        \node[align=center, rotate=30, text=lightgray, font=\huge\selectfont] at (current page.center) {
+            BORRADOR
+        };
+
+        \node[align=center, rotate=30, text=lightgray, font=\huge\selectfont, below=1cm] at (current page.center) {
+            PÁGINA NO VÁLIDA PARA RESPONDER
+        };
+
+    \end{tikzpicture}
+
+    \newpage 
+    \begin{tikzpicture}[remember picture,overlay]
+
+        \node[align=center, rotate=30, text=lightgray, font=\huge\selectfont] at (current page.center) {
+            BORRADOR
+        };
+
+        \node[align=center, rotate=30, text=lightgray, font=\huge\selectfont, below=1cm] at (current page.center) {
+            PÁGINA NO VÁLIDA PARA RESPONDER
+        };
+
+    \end{tikzpicture}
+
+
+
+\end{document}

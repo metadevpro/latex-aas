@@ -3,7 +3,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ARG INSTALL_EXTRA_PACKAGES
 
 EXPOSE 5050
-WORKDIR /opt/pdflatex
+WORKDIR /opt/arc-latex-be
 
 # install texlive 
 RUN apt-get update -qqy && \
@@ -19,9 +19,6 @@ RUN apt-get update -qqy && \
         texlive-latex-recommended \
         texlive-lang-spanish
         
-# texlive-full 
-# ${INSTALL_EXTRA_PACKAGES} 
-
 # install deno
 RUN curl -fsSL https://deno.land/install.sh | sh -s -- -y
 
@@ -29,7 +26,13 @@ COPY deno.json .
 RUN /root/.deno/bin/deno install
 COPY index.ts .
 COPY src/ src/
+RUN /root/.deno/bin/deno compile \
+    --allow-run \
+    --allow-net \
+    --allow-env \
+    --allow-write \
+    --allow-read \
+    --output arc-latex-be \
+    index.ts 
 
-CMD ["/root/.deno/bin/deno", "--allow-run", "--allow-net", "--allow-env", "--allow-write", "--allow-read", "/opt/pdflatex/index.ts"]
-
-# CMD ["sleep", "1000000"]
+ENTRYPOINT ["./arc-latex-be"]
