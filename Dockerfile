@@ -26,9 +26,9 @@ RUN apt-get update -qqy && \
 RUN curl -fsSL https://deno.land/install.sh | sh -s -- -y
 
 COPY deno.json .
+RUN /root/.deno/bin/deno install
 COPY index.ts .
 COPY src/ src/
-RUN /root/.deno/bin/deno install
 
 CMD ["/root/.deno/bin/deno", "--allow-run", "--allow-net", "--allow-env", "--allow-write", "--allow-read", "/opt/pdflatex/index.ts"]
 
