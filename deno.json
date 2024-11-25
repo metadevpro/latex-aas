@@ -1,0 +1,7 @@
+{
+  "tasks": {},
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "mathml-to-latex": "npm:mathml-to-latex@^1.4.3"
+  }
+}
