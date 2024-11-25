@@ -7,7 +7,7 @@ export const version = (
   res.writeHead(200, { "Content-Type": "application/json" });
   res.end(
     JSON.stringify({
-      name: "latex-ass",
+      name: "arc-latex-be",
       version: "1.0.0",
       ts: new Date().toISOString()
     })
