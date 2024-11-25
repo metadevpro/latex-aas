@@ -4,6 +4,7 @@ import { ping } from "./src/operation/ping.ts";
 import { version } from "./src/operation/version.ts";
 import { generate, generateFromZip } from "./src/generate.ts";
 import { convertMathMLToLatex } from "./src/mathml.ts";
+import { deleteFolderOlderThan } from "./src/fs.ts";
 
 const server = http.createServer(
   async (
@@ -21,8 +22,10 @@ const server = http.createServer(
       case "/version":
         return version(req, res);
       case "/pdf":
+        await houseKeeping();
         return generate(req, res);
       case "/zip":
+        await houseKeeping();
         return generateFromZip(req, res);
       case "/mathml":
         return await convertMathMLToLatex(req, res);
@@ -33,4 +36,9 @@ const server = http.createServer(
 );
 
 server.listen(process.env.PORT || 5050);
-console.log(`latex-aas v. 1.0.0 started.`);
+console.log(`arc-latex-be v. 1.0.0 started.`);
+
+const houseKeeping = async (): Promise<void> => {
+  const historyDays = +(process.env?.LOG_HISTORY_DAYS || 60);
+  await deleteFolderOlderThan(historyDays, "/tmp");
+};

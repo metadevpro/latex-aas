@@ -18,7 +18,7 @@ Adapted from <https://github.com/comsolid/pdflatex-saas>
 ### Build image
 
 ```bash
-docker build -t latex-aas \
+docker build -t arc-latex-be \
    --build-arg=INSTALL_EXTRA_PACKAGES="texlive-lang-spanish texlive-fonts-recommended" \
    .
 ```
@@ -26,7 +26,7 @@ docker build -t latex-aas \
 ### Run container
 
 ```bash
-docker run -d --name latex -p "5050:5050" latex-aas
+docker run -d --name latex -p "5050:5050" arc-latex-be
 ```
 
 ### Usage: Compile LaTeX to PDF
